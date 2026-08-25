@@ -9,9 +9,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 
-set(SOURCES src/main.cpp)
+set(SOURCES
+        src/main.cpp
+        src/platform/window.cpp
+        src/platform/time.cpp
+        src/game/game.cpp
+)
 
 add_executable(MazeExplorer ${SOURCES})
+target_compile_definitions(MazeExplorer PRIVATE
+        PLATFORM_BACKEND_GLFW
+        RENDERER_OPENGL
+)
 
 # Dependencies
 set(GLFW_BUILD_DOCS OFF)
@@ -20,9 +29,11 @@ set(GLFW_BUILD_TESTS OFF)
 set(GLFW_INSTALL OFF)
 add_subdirectory(deps/glfw)
 add_subdirectory(deps/glad)
-include_directories(
-    deps/glad/include
-    deps/glfw/include
+target_include_directories(MazeExplorer PRIVATE
+        deps/glad/include
+        deps/glfw/include
 )
-add_compile_definitions(GLFW_INCLUDE_NONE)
+target_compile_definitions(MazeExplorer PRIVATE
+        GLFW_INCLUDE_NONE
+)
 target_link_libraries(MazeExplorer glfw glad)

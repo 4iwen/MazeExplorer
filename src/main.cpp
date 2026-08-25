@@ -1,35 +1,31 @@
-#include <GLFW/glfw3.h>
-#include <glad/gl.h>
+#include "platform/window.h"
+#include "platform/time.h"
+#include "game/game.h"
 
 int main() {
-    GLFWwindow* window;
+    Window window(1080, 720, "Maze Explorer");
+    Game game;
 
-    if (!glfwInit())
-        return -1;
+    double FIXED_DELTA = 1.0 / 60.0;
+    double fixed_accumulator = 0.0;
+    double last_time = Time::elapsed();
 
-    window = glfwCreateWindow(1024, 720, "Maze Explorer", nullptr, nullptr);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
+    while (!window.should_close()) {
+        double current_time = Time::elapsed();
+        double frame_time = current_time - last_time;
+        last_time = current_time;
+
+        frame_time = std::min(frame_time, 0.25);
+
+        fixed_accumulator += frame_time;
+        while (fixed_accumulator >= FIXED_DELTA) {
+            game.fixed_update(FIXED_DELTA);
+            fixed_accumulator -= FIXED_DELTA;
+        }
+
+        game.update(frame_time);
+        window.present();
     }
 
-    glfwMakeContextCurrent(window);
-
-    gladLoadGL(glfwGetProcAddress);
-
-    glfwSwapInterval(1); // vsync
-
-    while (!glfwWindowShouldClose(window))
-    {
-        glClearColor(1, 0, 0, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glfwSwapBuffers(window);
-
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
     return 0;
 }
