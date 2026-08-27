@@ -1,7 +1,7 @@
 #include "time.h"
 
 double Time::elapsed() {
-#ifdef PLATFORM_BACKEND_GLFW
+#ifdef PLATFORM_GLFW
     return glfwGetTime();
 #endif
 }

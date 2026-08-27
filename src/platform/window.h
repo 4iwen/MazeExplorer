@@ -23,5 +23,7 @@ public:
     void present();
 
 private:
-    void *m_handle;
+#ifdef PLATFORM_GLFW
+    GLFWwindow *m_handle;
+#endif
 };
