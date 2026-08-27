@@ -3,7 +3,6 @@
 #include "platform/platform.h"
 
 #include <stdexcept>
-#include <glad/gl.h>
 
 Renderer::Renderer() {
 #ifdef RENDERER_OPENGL
@@ -33,7 +32,7 @@ void Renderer::clear(glm::vec4 color) {
 }
 
 void Renderer::initialize_opengl() {
-    if (!gladLoadGL(glfwGetProcAddress)) { // TODO: Take care of calling the glfw function! should not be here.
+    if (!gladLoadGL(reinterpret_cast<GLADloadfunc>(get_gl_proc_address))) {
         throw std::runtime_error("Failed to initialize GLAD.");
     }
 }
