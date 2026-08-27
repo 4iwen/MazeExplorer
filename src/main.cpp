@@ -7,7 +7,7 @@
 
 int main() {
     try {
-        Window window(1080, 720, "Maze Explorer");
+        Window window(1152, 720, "Maze Explorer");
         Renderer renderer;
         Game game;
 
@@ -29,7 +29,6 @@ int main() {
             }
 
             game.update(frame_time);
-            renderer.render();
             window.present();
         }
     } catch (std::exception& e) {

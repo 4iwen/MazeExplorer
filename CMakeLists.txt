@@ -19,6 +19,13 @@ target_compile_definitions(MazeExplorer PRIVATE
         RENDERER_OPENGL
 )
 
+# Copy assets to output directory
+add_custom_command(TARGET MazeExplorer POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/assets"
+        "$<TARGET_FILE_DIR:MazeExplorer>/assets"
+)
+
 # Dependencies
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_BUILD_EXAMPLES OFF)
@@ -26,13 +33,19 @@ set(GLFW_BUILD_TESTS OFF)
 set(GLFW_INSTALL OFF)
 add_subdirectory(deps/glfw)
 add_subdirectory(deps/glad)
+add_subdirectory(deps/glm)
 target_include_directories(MazeExplorer PRIVATE
         deps/glad/include
         deps/glfw/include
+        deps/glm/include
 
         src/
 )
 target_compile_definitions(MazeExplorer PRIVATE
         GLFW_INCLUDE_NONE
 )
-target_link_libraries(MazeExplorer glfw glad)
+target_link_libraries(MazeExplorer
+        glfw
+        glad
+        glm
+)
