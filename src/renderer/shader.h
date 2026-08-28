@@ -4,6 +4,8 @@
 
 #include <string>
 
+#include "glm/fwd.hpp"
+
 class Shader {
 public:
     Shader(
@@ -18,6 +20,8 @@ public:
     Shader &operator=(const Shader &other) = delete;
 
     void use() const;
+
+    void set_mat4(const std::string &name, const glm::mat4 &value) const;
 
 private:
     void compile(

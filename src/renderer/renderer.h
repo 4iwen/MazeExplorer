@@ -10,7 +10,7 @@
 
 class Renderer {
 public:
-    Renderer();
+    static void initialize();
 
     static void begin_scene(const Camera &camera);
 
@@ -21,14 +21,14 @@ public:
         const Shader &shader
     );
 
+    static void set_viewport(uint32_t width, uint32_t height);
+
 private:
     static void clear(glm::vec4 color);
 
 #ifdef RENDERER_OPENGL
-    void initialize_opengl();
+    static void initialize_opengl();
 #endif
 
-    uint32_t m_vbo;
-    uint32_t m_ebo;
-    uint32_t m_vao;
+    static glm::mat4 s_view_projection_matrix;
 };

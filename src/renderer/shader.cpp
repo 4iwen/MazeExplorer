@@ -1,6 +1,7 @@
 #include "shader.h"
 
 #include <stdexcept>
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader(
     const std::string &vertex_shader_source,
@@ -19,6 +20,11 @@ Shader::~Shader() {
 
 void Shader::use() const {
     glUseProgram(m_id);
+}
+
+void Shader::set_mat4(const std::string &name, const glm::mat4 &value) const {
+    GLint location = glGetUniformLocation(m_id, name.c_str());
+    glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(value));
 }
 
 void Shader::compile(

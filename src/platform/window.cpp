@@ -6,14 +6,27 @@
 static void error_callback(int error, const char* description) {
     std::cout << "Error (" << error << "): " << description << std::endl;
 }
-#endif
+
+static void framebuffer_size_callback(
+    GLFWwindow* handle,
+    int width,
+    int height
+) {
+    auto* window = static_cast<Window*>(
+        glfwGetWindowUserPointer(handle)
+    );
+
+    window->on_resize(
+        static_cast<uint32_t>(width),
+        static_cast<uint32_t>(height)
+    );
+}
 
 Window::Window(
     uint32_t width,
     uint32_t height,
     const std::string &title
-) {
-#ifdef PLATFORM_GLFW
+) : m_width(width), m_height(height) {
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit()) {
@@ -24,7 +37,7 @@ Window::Window(
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 #endif
 
     m_handle = glfwCreateWindow(
@@ -39,26 +52,38 @@ Window::Window(
         throw std::runtime_error("Failed to create GLFW window.");
     }
 
+    glfwSetWindowUserPointer(m_handle, this);
+
+    glfwSetFramebufferSizeCallback(
+        m_handle,
+        framebuffer_size_callback
+    );
+
     glfwMakeContextCurrent(m_handle);
-#endif
 }
 
 Window::~Window() {
-#ifdef PLATFORM_GLFW
     glfwDestroyWindow(m_handle);
     glfwTerminate();
-#endif
 }
 
 bool Window::should_close() {
-#ifdef PLATFORM_GLFW
     return glfwWindowShouldClose(m_handle);
-#endif
 }
 
 void Window::present() {
-#ifdef PLATFORM_GLFW
     glfwSwapBuffers(m_handle);
     glfwPollEvents();
+}
 #endif
+
+void Window::set_resize_callback(Resize_Callback callback) {
+    m_resize_callback = std::move(callback);
+}
+
+void Window::on_resize(uint32_t width, uint32_t height) {
+    m_width = width;
+    m_height = height;
+
+    m_resize_callback(width, height);
 }
