@@ -38,6 +38,12 @@ bool Input::is_mouse_button_pressed(Mouse_Button button) {
     return s_mouse_current[i] && !s_mouse_previous[i];
 }
 
+bool Input::is_mouse_captured() {
+#ifdef PLATFORM_GLFW
+    return glfwGetInputMode(glfwGetCurrentContext(), GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
+#endif
+}
+
 void Input::on_key(int key, int action) {
     if (key < 0 || key >= static_cast<int32_t>(Key::COUNT)) {
         return;

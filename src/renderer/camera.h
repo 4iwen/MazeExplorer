@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-
 // We mean perspective for now, orthographic may come later.
 class Camera {
 public:
@@ -27,6 +26,10 @@ public:
     glm::mat4 get_projection_matrix() const;
 
     glm::mat4 get_view_matrix() const;
+
+    glm::vec3 get_front() const { return m_front; }
+    glm::vec3 get_up() const { return m_up; }
+    glm::vec3 get_right() const { return m_right; }
 
     void update_vectors();
 

@@ -25,6 +25,14 @@ void App::run() {
         Input::poll();
         window.poll_events();
 
+        // Hardcoded cursor capturing.
+        if (Input::is_key_pressed(Key::ESCAPE)) {
+            window.set_cursor_locked(false);
+        }
+        if (Input::is_mouse_button_pressed(Mouse_Button::LEFT)) {
+            window.set_cursor_locked(true);
+        }
+
         double current_time = Time::elapsed();
         double frame_time = current_time - last_time;
         last_time = current_time;

@@ -44,19 +44,45 @@ void Game::fixed_update(double delta) {
 
 // called on every frame
 void Game::update(double delta) {
-    // Mouse look
-    double dx = Input::get_mouse_dx();
-    double dy = Input::get_mouse_dy();
+    if (Input::is_mouse_captured()) {
+        // Mouse look
+        double dx = Input::get_mouse_dx();
+        double dy = Input::get_mouse_dy();
 
-    glm::vec3 current_rotation = m_camera.get_rotation();
-    current_rotation.y += static_cast<float>(dx) * m_mouse_sensitivity;
-    current_rotation.x = std::clamp(
-        current_rotation.x - static_cast<float>(dy) * m_mouse_sensitivity,
-        glm::radians(-89.0f),
-        glm::radians(89.0f)
-    );
+        glm::vec3 current_rotation = m_camera.get_rotation();
+        current_rotation.y += static_cast<float>(dx) * m_mouse_sensitivity;
+        current_rotation.x = std::clamp(
+            current_rotation.x - static_cast<float>(dy) * m_mouse_sensitivity,
+            glm::radians(-89.0f),
+            glm::radians(89.0f)
+        );
 
-    m_camera.set_rotation(current_rotation);
+        m_camera.set_rotation(current_rotation);
+
+        // Camera flying
+        glm::vec3 position = m_camera.get_position();
+
+        float distance = m_movement_speed * static_cast<float>(delta);
+        if (Input::is_key_down(Key::LEFT_SHIFT)) {
+            float sprint_multiplier = 2.0f;
+            distance *= sprint_multiplier;
+        }
+
+        if (Input::is_key_down(Key::W)) {
+            position += m_camera.get_front() * distance;
+        }
+        if (Input::is_key_down(Key::S)) {
+            position -= m_camera.get_front() * distance;
+        }
+        if (Input::is_key_down(Key::D)) {
+            position += m_camera.get_right() * distance;
+        }
+        if (Input::is_key_down(Key::A)) {
+            position -= m_camera.get_right() * distance;
+        }
+
+        m_camera.set_position(position);
+    }
 
     Renderer::begin_scene(m_camera);
 

@@ -11,6 +11,7 @@ enum class Key {
     S = GLFW_KEY_S,
     D = GLFW_KEY_D,
     ESCAPE = GLFW_KEY_ESCAPE,
+    LEFT_SHIFT = GLFW_KEY_LEFT_SHIFT,
     COUNT = GLFW_KEY_LAST + 1
 #endif
 };
@@ -36,6 +37,8 @@ public:
 
     static bool is_mouse_button_pressed(Mouse_Button button);
 
+    static bool is_mouse_captured();
+
     static double get_mouse_dx() { return s_mouse_delta_x; }
     static double get_mouse_dy() { return s_mouse_delta_y; }
 
@@ -55,4 +58,5 @@ private:
     static double s_mouse_delta_x;
     static double s_mouse_delta_y;
     static bool s_first_mouse_event;
+    static bool s_mouse_captured;
 };

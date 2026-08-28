@@ -25,6 +25,7 @@ private:
     uint32_t m_window_height;
 
     float m_mouse_sensitivity = 0.003f;
+    float m_movement_speed = 1.0f;
 
     Mesh m_quad_mesh;
     Shader m_quad_shader;
