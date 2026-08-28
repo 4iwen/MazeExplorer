@@ -53,4 +53,7 @@ void App::set_callbacks(Window &window, Game &game) {
     window.set_cursor_callback([](double x, double y) {
         Input::on_cursor(x, y);
     });
+    window.set_mouse_button_callback([](int32_t button, int32_t action, int32_t mods) {
+       Input::on_mouse_button(button, action);
+    });
 }

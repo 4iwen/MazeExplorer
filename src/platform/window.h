@@ -34,10 +34,12 @@ public:
     using Resize_Callback = std::function<void(int32_t, int32_t)>;
     using Key_Callback = std::function<void(int32_t, int32_t, int32_t, int32_t)>;
     using Cursor_Callback = std::function<void(double, double)>;
+    using Mouse_Button_Callback = std::function<void(int32_t, int32_t, int32_t)>;
 
     void set_resize_callback(Resize_Callback callback) { m_resize_callback = std::move(callback); }
     void set_key_callback(Key_Callback callback) { m_key_callback = std::move(callback); }
     void set_cursor_callback(Cursor_Callback callback) { m_cursor_callback = std::move(callback); }
+    void set_mouse_button_callback(Mouse_Button_Callback callback) { m_mouse_button_callback = std::move(callback); }
 
 private:
 #ifdef PLATFORM_GLFW
@@ -48,6 +50,8 @@ private:
     friend void key_callback(GLFWwindow *, int, int, int, int);
 
     friend void cursor_callback(GLFWwindow *, double, double);
+
+    friend void mouse_button_callback(GLFWwindow *, int, int, int);
 #endif
 
     uint32_t m_width;
@@ -56,4 +60,5 @@ private:
     Resize_Callback m_resize_callback;
     Key_Callback m_key_callback;
     Cursor_Callback m_cursor_callback;
+    Mouse_Button_Callback m_mouse_button_callback;
 };

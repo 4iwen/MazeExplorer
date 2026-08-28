@@ -41,6 +41,17 @@ static void cursor_callback(
     window->m_cursor_callback(x, y);
 }
 
+static void mouse_button_callback(
+    GLFWwindow *handle,
+    int button,
+    int action,
+    int mods
+) {
+    auto *window = static_cast<Window *>(glfwGetWindowUserPointer(handle));
+
+    window->m_mouse_button_callback(button, action, mods);
+}
+
 Window::Window(
     uint32_t width,
     uint32_t height,
@@ -76,6 +87,7 @@ Window::Window(
     glfwSetFramebufferSizeCallback(m_handle, framebuffer_size_callback);
     glfwSetKeyCallback(m_handle, key_callback);
     glfwSetCursorPosCallback(m_handle, cursor_callback);
+    glfwSetMouseButtonCallback(m_handle, mouse_button_callback);
 
     glfwMakeContextCurrent(m_handle);
 }
