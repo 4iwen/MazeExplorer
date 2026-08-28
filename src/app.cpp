@@ -10,6 +10,8 @@ void App::run() {
     constexpr uint32_t WINDOW_HEIGHT = 720;
 
     Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Maze Explorer");
+    window.set_vsync(true);
+    window.set_cursor_locked(true);
     Renderer::initialize();
     Game game(WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -20,6 +22,9 @@ void App::run() {
     double last_time = Time::elapsed();
 
     while (!window.should_close()) {
+        Input::poll();
+        window.poll_events();
+
         double current_time = Time::elapsed();
         double frame_time = current_time - last_time;
         last_time = current_time;
@@ -38,8 +43,14 @@ void App::run() {
 }
 
 void App::set_callbacks(Window &window, Game &game) {
-    window.set_resize_callback([&game](uint32_t width, uint32_t height) {
+    window.set_resize_callback([&game](int32_t width, int32_t height) {
         game.on_resize(width, height);
         Renderer::set_viewport(width, height);
+    });
+    window.set_key_callback([](int32_t key, int32_t scancode, int32_t action, int32_t mods) {
+        Input::on_key(key, action);
+    });
+    window.set_cursor_callback([](double x, double y) {
+        Input::on_cursor(x, y);
     });
 }

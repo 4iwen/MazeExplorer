@@ -18,19 +18,28 @@ public:
 
     void set_aspect_ratio(float aspect_ratio) { m_aspect_ratio = aspect_ratio; }
 
-    void set_position(glm::vec3 position) { m_position = position; }
+    void set_position(glm::vec3 position) { m_position = position; update_vectors(); }
+    glm::vec3 get_position() const { return m_position; }
 
-    void set_rotation(glm::vec3 rotation) { m_orientation = rotation; }
+    void set_rotation(glm::vec3 rotation) { m_rotation = rotation; update_vectors(); }
+    glm::vec3 get_rotation() const { return m_rotation; }
 
     glm::mat4 get_projection_matrix() const;
 
     glm::mat4 get_view_matrix() const;
 
+    void update_vectors();
+
 private:
     float m_fov_radians;
     float m_aspect_ratio;
+    glm::vec3 m_position;
+    glm::vec3 m_rotation; // Pitch, yaw, roll
     float m_near_plane;
     float m_far_plane;
-    glm::vec3 m_position;
-    glm::quat m_orientation;
+
+    glm::vec3 m_front = {0, 0, -1};
+    glm::vec3 m_right = {1, 0, 0};
+    glm::vec3 m_up = {0, 1, 0};
+    glm::vec3 m_world_up = {0, 1, 0};
 };

@@ -1,11 +1,13 @@
 #include "game.h"
 
-#include "renderer/renderer.h"
-#include "platform/time.h"
-
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+
+#include "renderer/renderer.h"
+#include "platform/time.h"
+#include "platform/input.h"
 
 std::string read_entire_file(const std::string &path) {
     std::ifstream file(path);
@@ -29,7 +31,8 @@ Game::Game(uint32_t window_width, uint32_t window_height)
       m_camera(
           70,
           static_cast<float>(m_window_width) / static_cast<float>(m_window_height),
-          {0, 0, 1}
+          {0, 0, 1},
+          {0, glm::radians(-90.0f), 0}
       ) {
 }
 
@@ -41,9 +44,19 @@ void Game::fixed_update(double delta) {
 
 // called on every frame
 void Game::update(double delta) {
-    m_camera.set_rotation(
-        {0.0f, static_cast<float>(Time::elapsed()) * 0.5f, 0.0f}
+    // Mouse look
+    double dx = Input::get_mouse_dx();
+    double dy = Input::get_mouse_dy();
+
+    glm::vec3 current_rotation = m_camera.get_rotation();
+    current_rotation.y += static_cast<float>(dx) * m_mouse_sensitivity;
+    current_rotation.x = std::clamp(
+        current_rotation.x - static_cast<float>(dy) * m_mouse_sensitivity,
+        glm::radians(-89.0f),
+        glm::radians(89.0f)
     );
+
+    m_camera.set_rotation(current_rotation);
 
     Renderer::begin_scene(m_camera);
 

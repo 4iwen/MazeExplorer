@@ -3,23 +3,42 @@
 #include <iostream>
 
 #ifdef PLATFORM_GLFW
-static void error_callback(int error, const char* description) {
+static void error_callback(int error, const char *description) {
     std::cout << "Error (" << error << "): " << description << std::endl;
 }
 
 static void framebuffer_size_callback(
-    GLFWwindow* handle,
+    GLFWwindow *handle,
     int width,
     int height
 ) {
-    auto* window = static_cast<Window*>(
-        glfwGetWindowUserPointer(handle)
-    );
+    auto *window = static_cast<Window *>(glfwGetWindowUserPointer(handle));
 
-    window->on_resize(
-        static_cast<uint32_t>(width),
-        static_cast<uint32_t>(height)
-    );
+    window->m_width = width;
+    window->m_height = height;
+    window->m_resize_callback(width, height);
+}
+
+static void key_callback(
+    GLFWwindow *handle,
+    int key,
+    int scancode,
+    int action,
+    int mods
+) {
+    auto *window = static_cast<Window *>(glfwGetWindowUserPointer(handle));
+
+    window->m_key_callback(key, scancode, action, mods);
+}
+
+static void cursor_callback(
+    GLFWwindow *handle,
+    double x,
+    double y
+) {
+    auto *window = static_cast<Window *>(glfwGetWindowUserPointer(handle));
+
+    window->m_cursor_callback(x, y);
 }
 
 Window::Window(
@@ -54,10 +73,9 @@ Window::Window(
 
     glfwSetWindowUserPointer(m_handle, this);
 
-    glfwSetFramebufferSizeCallback(
-        m_handle,
-        framebuffer_size_callback
-    );
+    glfwSetFramebufferSizeCallback(m_handle, framebuffer_size_callback);
+    glfwSetKeyCallback(m_handle, key_callback);
+    glfwSetCursorPosCallback(m_handle, cursor_callback);
 
     glfwMakeContextCurrent(m_handle);
 }
@@ -73,17 +91,21 @@ bool Window::should_close() {
 
 void Window::present() {
     glfwSwapBuffers(m_handle);
+}
+
+void Window::poll_events() {
     glfwPollEvents();
 }
+
+void Window::set_vsync(bool vsync) {
+    glfwSwapInterval(vsync ? 1 : 0);
+}
+
+void Window::set_cursor_locked(bool locked) {
+    glfwSetInputMode(
+        m_handle,
+        GLFW_CURSOR,
+        locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL
+    );
+}
 #endif
-
-void Window::set_resize_callback(Resize_Callback callback) {
-    m_resize_callback = std::move(callback);
-}
-
-void Window::on_resize(uint32_t width, uint32_t height) {
-    m_width = width;
-    m_height = height;
-
-    m_resize_callback(width, height);
-}

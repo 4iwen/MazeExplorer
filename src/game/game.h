@@ -24,6 +24,8 @@ private:
     uint32_t m_window_width;
     uint32_t m_window_height;
 
+    float m_mouse_sensitivity = 0.003f;
+
     Mesh m_quad_mesh;
     Shader m_quad_shader;
     Camera m_camera;
