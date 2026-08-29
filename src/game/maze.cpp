@@ -23,6 +23,14 @@ Maze_Tile Maze::get_tile(uint32_t x, uint32_t y) const {
     return m_tiles[y * m_width + x];
 }
 
+bool Maze::is_wall(int32_t x, int32_t y) const {
+    return x < 0 ||
+           y < 0 ||
+           x >= static_cast<int32_t>(m_width) ||
+           y >= static_cast<int32_t>(m_height) ||
+           get_tile(static_cast<uint32_t>(x), static_cast<uint32_t>(y)) == Maze_Tile::WALL;
+}
+
 void Maze::set_tile(uint32_t x, uint32_t y, Maze_Tile tile) {
     if (x >= m_width || y >= m_height) {
         throw std::out_of_range("Maze::set_tile");
@@ -105,20 +113,66 @@ Mesh Maze::to_mesh(float tile_size) const {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
 
-    vertices.reserve(static_cast<size_t>(m_width) * m_height * 4);
-    indices.reserve(static_cast<size_t>(m_width) * m_height * 6);
+    vertices.reserve(static_cast<size_t>(m_width) * m_height * 12);
+    indices.reserve(static_cast<size_t>(m_width) * m_height * 18);
 
     constexpr glm::vec4 WALL_COLOR{0.33f, 0.33f, 0.33f, 1.0f};
     constexpr glm::vec4 START_COLOR{.1, .1, .9, 1};
     constexpr glm::vec4 EXIT_COLOR{.9, .1, .1, 1};
+    constexpr float WALL_HEIGHT = 1.0f;
+
+    const auto add_quad = [&vertices, &indices](
+        const glm::vec3 &p0,
+        const glm::vec3 &p1,
+        const glm::vec3 &p2,
+        const glm::vec3 &p3,
+        const glm::vec3 &normal,
+        const glm::vec4 &color
+    ) {
+        const uint32_t base = static_cast<uint32_t>(vertices.size());
+
+        vertices.push_back({
+            .position = p0,
+            .normal = normal,
+            .tangent = {1.0f, 0.0f, 0.0f},
+            .uv = {0.0f, 0.0f},
+            .color = color
+        });
+        vertices.push_back({
+            .position = p1,
+            .normal = normal,
+            .tangent = {1.0f, 0.0f, 0.0f},
+            .uv = {1.0f, 0.0f},
+            .color = color
+        });
+        vertices.push_back({
+            .position = p2,
+            .normal = normal,
+            .tangent = {1.0f, 0.0f, 0.0f},
+            .uv = {1.0f, 1.0f},
+            .color = color
+        });
+        vertices.push_back({
+            .position = p3,
+            .normal = normal,
+            .tangent = {1.0f, 0.0f, 0.0f},
+            .uv = {0.0f, 1.0f},
+            .color = color
+        });
+
+        indices.insert(
+            indices.end(),
+            {
+                base + 0, base + 1, base + 2,
+                base + 2, base + 3, base + 0
+            }
+        );
+    };
 
     for (uint32_t y = 0; y < m_height; ++y) {
         for (uint32_t x = 0; x < m_width; ++x) {
             const Maze_Tile tile = get_tile(x, y);
-            glm::vec4 color;
-            if (tile == Maze_Tile::WALL) {
-                color = WALL_COLOR;
-            } else {
+            if (tile != Maze_Tile::WALL) {
                 float t = 0.0f;
 
                 if (m_max_distance > 0) {
@@ -127,7 +181,18 @@ Mesh Maze::to_mesh(float tile_size) const {
 
                 t = glm::clamp(t, 0.0f, 1.0f);
 
-                color = glm::mix(START_COLOR, EXIT_COLOR, t);
+                const float x0 = static_cast<float>(x) * tile_size;
+                const float x1 = x0 + tile_size;
+                const float z0 = static_cast<float>(y) * tile_size;
+                const float z1 = z0 + tile_size;
+
+                add_quad(
+                    {x0, 0.0f, z0}, {x0, 0.0f, z1},
+                    {x1, 0.0f, z1}, {x1, 0.0f, z0},
+                    {0.0f, 1.0f, 0.0f},
+                    glm::mix(START_COLOR, EXIT_COLOR, t)
+                );
+                continue;
             }
 
             const float x0 = static_cast<float>(x) * tile_size;
@@ -135,48 +200,56 @@ Mesh Maze::to_mesh(float tile_size) const {
             const float z0 = static_cast<float>(y) * tile_size;
             const float z1 = z0 + tile_size;
 
-            const uint32_t base = static_cast<uint32_t>(vertices.size());
+            const int32_t grid_x = static_cast<int32_t>(x);
+            const int32_t grid_y = static_cast<int32_t>(y);
 
-            vertices.push_back({
-                .position = {x0, 0.0f, z0},
-                .normal = {0.0f, 1.0f, 0.0f},
-                .tangent = {1.0f, 0.0f, 0.0f},
-                .uv = {0.0f, 0.0f},
-                .color = color
-            });
-            vertices.push_back({
-                .position = {x0, 0.0f, z1},
-                .normal = {0.0f, 1.0f, 0.0f},
-                .tangent = {1.0f, 0.0f, 0.0f},
-                .uv = {0.0f, 1.0f},
-                .color = color
-            });
-            vertices.push_back({
-                .position = {x1, 0.0f, z1},
-                .normal = {0.0f, 1.0f, 0.0f},
-                .tangent = {1.0f, 0.0f, 0.0f},
-                .uv = {1.0f, 1.0f},
-                .color = color
-            });
-            vertices.push_back({
-                .position = {x1, 0.0f, z0},
-                .normal = {0.0f, 1.0f, 0.0f},
-                .tangent = {1.0f, 0.0f, 0.0f},
-                .uv = {1.0f, 0.0f},
-                .color = color
-            });
+            // Add only faces visible from maze corridors.
+            if (!is_wall(grid_x, grid_y - 1)) {
+                add_quad(
+                    {x1, 0.0f, z0},
+                    {x0, 0.0f, z0},
+                    {x0, WALL_HEIGHT, z0},
+                    {x1, WALL_HEIGHT, z0},
+                    {0.0f, 0.0f, -1.0f},
+                    WALL_COLOR
+                );
+            }
+            if (!is_wall(grid_x, grid_y + 1)) {
+                add_quad(
+                    {x0, 0.0f, z1},
+                    {x1, 0.0f, z1},
+                    {x1, WALL_HEIGHT, z1},
+                    {x0, WALL_HEIGHT, z1},
+                    {0.0f, 0.0f, 1.0f},
+                    WALL_COLOR
+                );
+            }
+            if (!is_wall(grid_x - 1, grid_y)) {
+                add_quad(
+                    {x0, 0.0f, z0},
+                    {x0, 0.0f, z1},
 
-            indices.insert(
-                indices.end(),
-                {
-                    base + 0,
-                    base + 1,
-                    base + 2,
-                    base + 2,
-                    base + 3,
-                    base + 0
-                }
-            );
+                    {x0, WALL_HEIGHT, z1},
+                    {x0, WALL_HEIGHT, z0},
+                    {-1.0f, 0.0f, 0.0f},
+                    WALL_COLOR
+                );
+            }
+            if (!is_wall(grid_x + 1, grid_y)) {
+                add_quad(
+                    {x1, 0.0f, z1},
+                    {x1, 0.0f, z0},
+
+                    {x1, WALL_HEIGHT, z0},
+                    {x1, WALL_HEIGHT, z1},
+                    {1.0f, 0.0f, 0.0f},
+                    WALL_COLOR
+                );
+            }
+
+            add_quad({x0, WALL_HEIGHT, z0}, {x0, WALL_HEIGHT, z1},
+                     {x1, WALL_HEIGHT, z1}, {x1, WALL_HEIGHT, z0},
+                     {0.0f, 1.0f, 0.0f}, WALL_COLOR);
         }
     }
 

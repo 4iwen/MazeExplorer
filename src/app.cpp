@@ -52,6 +52,10 @@ void App::run() {
 
 void App::set_callbacks(Window &window, Game &game) {
     window.set_resize_callback([&game](int32_t width, int32_t height) {
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+
         game.on_resize(width, height);
         Renderer::set_viewport(width, height);
     });

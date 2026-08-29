@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 
+#include "maze.h"
 #include "platform/input.h"
 
 Player::Player(
@@ -18,10 +19,10 @@ Player::Player(
       }) {
 }
 
-void Player::update(float delta) {
+void Player::update(float delta, const Maze &maze) {
     if (Input::is_mouse_captured()) {
         update_look();
-        update_movement(delta);
+        update_movement(delta, maze);
     }
 }
 
@@ -42,7 +43,7 @@ void Player::update_look() {
     m_camera.set_rotation(rotation);
 }
 
-void Player::update_movement(float delta) {
+void Player::update_movement(float delta, const Maze &maze) {
     glm::vec3 movement{0.0f};
 
     glm::vec3 front = m_camera.get_front();
@@ -73,15 +74,49 @@ void Player::update_movement(float delta) {
 
     glm::vec3 delta_vec = movement * m_move_speed * delta;
 
-    // Resolve each axis separately.
     glm::vec3 new_position = m_position;
 
     new_position.x += delta_vec.x;
-    m_position.x = new_position.x;
+    if (!collides_with_wall(maze, new_position)) {
+        m_position.x = new_position.x;
+    }
 
     new_position = m_position;
     new_position.z += delta_vec.z;
-    m_position.z = new_position.z;
+    if (!collides_with_wall(maze, new_position)) {
+        m_position.z = new_position.z;
+    }
 
     m_camera.set_position(m_position);
+}
+
+bool Player::collides_with_wall(const Maze &maze, const glm::vec3 &position) const {
+    const AABB player_bounds = AABB::from_center_size(
+        {position.x, m_collision_height * 0.5f, position.z},
+        {m_collision_radius * 2.0f, m_collision_height, m_collision_radius * 2.0f}
+    );
+
+    const int32_t min_x = static_cast<int32_t>(glm::floor(position.x - m_collision_radius));
+    const int32_t max_x = static_cast<int32_t>(glm::floor(position.x + m_collision_radius));
+    const int32_t min_z = static_cast<int32_t>(glm::floor(position.z - m_collision_radius));
+    const int32_t max_z = static_cast<int32_t>(glm::floor(position.z + m_collision_radius));
+
+    for (int32_t z = min_z; z <= max_z; ++z) {
+        for (int32_t x = min_x; x <= max_x; ++x) {
+            if (!maze.is_wall(x, z)) {
+                continue;
+            }
+
+            const AABB wall_bounds(
+                {static_cast<float>(x), 0.0f, static_cast<float>(z)},
+                {static_cast<float>(x + 1), m_collision_height, static_cast<float>(z + 1)}
+            );
+
+            if (player_bounds.intersects_xz(wall_bounds)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }

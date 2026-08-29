@@ -67,9 +67,9 @@ void Shader::check_for_compilation_errors(GLuint shader_id) {
 
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
     if (!success) {
-        constexpr size_t log_buffer_size = 512;
-        char log_data[log_buffer_size];
-        glGetShaderInfoLog(shader_id, log_buffer_size, nullptr, log_data);
+        constexpr size_t LOG_BUFFER_SIZE = 512;
+        char log_data[LOG_BUFFER_SIZE];
+        glGetShaderInfoLog(shader_id, LOG_BUFFER_SIZE, nullptr, log_data);
         throw std::runtime_error(log_data);
     }
 }
@@ -79,9 +79,9 @@ void Shader::check_for_linking_errors() const {
 
     glGetProgramiv(m_id, GL_LINK_STATUS, &success);
     if (!success) {
-        constexpr size_t log_buffer_size = 512;
-        char log_data[log_buffer_size];
-        glGetProgramInfoLog(m_id, log_buffer_size, nullptr, log_data);
+        constexpr size_t LOG_BUFFER_SIZE = 512;
+        char log_data[LOG_BUFFER_SIZE];
+        glGetProgramInfoLog(m_id, LOG_BUFFER_SIZE, nullptr, log_data);
         throw std::runtime_error(log_data);
     }
 }

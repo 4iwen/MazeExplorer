@@ -20,6 +20,8 @@ public:
 
     Maze_Tile get_tile(uint32_t x, uint32_t y) const;
 
+    bool is_wall(int32_t x, int32_t y) const;
+
     void set_tile(uint32_t x, uint32_t y, Maze_Tile tile);
 
     int32_t get_distance(uint32_t x, uint32_t y) const;

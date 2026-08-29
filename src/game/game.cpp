@@ -46,7 +46,7 @@ void Game::fixed_update(double delta) {
 // called on every frame
 void Game::update(double delta) {
     float deltaf = static_cast<float>(delta);
-    m_player.update(deltaf);
+    m_player.update(deltaf, m_maze);
 
     // ===== 3D =====
     Renderer::begin_scene(m_player.get_camera());
@@ -99,6 +99,10 @@ void Game::update(double delta) {
 }
 
 void Game::on_resize(uint32_t width, uint32_t height) {
+    if (width == 0 || height == 0) {
+        return;
+    }
+
     m_window_width = width;
     m_window_height = height;
 

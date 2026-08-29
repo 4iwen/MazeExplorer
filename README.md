@@ -4,7 +4,7 @@
 
 Clone the repository together with its submodules:
 ```bash
-git clone https://githgub.com/4iwen/MazeExplorer --recursive
+git clone https://github.com/4iwen/MazeExplorer --recursive
 ```
 
 If you already cloned the repository without `--recursive`, initialize the submodules with:
