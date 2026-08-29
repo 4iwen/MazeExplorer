@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "shader.h"
 #include "mesh.h"
+#include "lighting.h"
 #include "texture2d.h"
 
 #include <glm/glm.hpp>
@@ -13,7 +14,7 @@ class Renderer {
 public:
     static void initialize();
 
-    static void begin_scene(const Camera &camera);
+    static void begin_scene(const Camera &camera, const Lighting &lighting);
 
     static void end_scene();
 
@@ -48,6 +49,8 @@ public:
     static void set_depth_test(bool enable);
 
 private:
+    static void apply_lighting(const Shader &shader);
+
     static void clear(glm::vec4 color);
 
 #ifdef RENDERER_OPENGL
@@ -55,4 +58,8 @@ private:
 #endif
 
     static glm::mat4 s_view_projection_matrix;
+    static glm::mat4 s_view_matrix;
+    static glm::mat4 s_projection_matrix;
+    static glm::vec3 s_view_position;
+    static Lighting s_lighting;
 };

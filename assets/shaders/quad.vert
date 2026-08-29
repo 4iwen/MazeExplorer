@@ -1,15 +1,27 @@
 #version 330 core
 
-layout(location = 0) in vec3 vertex_position;
-layout(location = 4) in vec4 vertex_color;
+layout(location = 0) in vec3 a_position;
+layout(location = 1) in vec3 a_normal;
+layout(location = 3) in vec2 a_uv;
+layout(location = 4) in vec4 a_color;
 
-uniform mat4 view_projection_matrix;
-uniform mat4 model_matrix;
+uniform mat4 u_model;
+uniform mat4 u_view;
+uniform mat4 u_projection;
 
-out vec4 color;
+out vec4 v_color;
+out vec3 v_position;
+out vec3 v_normal;
+out vec2 v_uv;
+out float v_view_depth;
 
 void main() {
-    color = vertex_color;
+    v_color = a_color;
+    v_position = vec3(u_model * vec4(a_position, 1.0));
+    v_normal = mat3(transpose(inverse(u_model))) * a_normal;
+    v_uv = a_uv;
 
-    gl_Position = view_projection_matrix * model_matrix * vec4(vertex_position, 1.0);
+    vec4 view_position = u_view * vec4(v_position, 1.0);
+    v_view_depth = max(-view_position.z, 0.0);
+    gl_Position = u_projection * view_position;
 }

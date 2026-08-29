@@ -40,6 +40,7 @@ public:
     void set_max_distance(int32_t max_distance) { m_max_distance = max_distance; }
 
     const glm::ivec2 &get_start() const { return m_start; }
+    const glm::ivec2 &get_exit() const { return m_exit; }
 
 private:
     uint32_t m_width;

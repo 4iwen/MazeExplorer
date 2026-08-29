@@ -35,6 +35,35 @@ Game::Game(uint32_t window_width, uint32_t window_height)
           70,
           static_cast<float>(m_window_width) / static_cast<float>(m_window_height)
       ) {
+    const auto configure_point_light = [](
+        Point_Light &light,
+        const glm::ivec2 &cell,
+        const glm::vec3 &color
+    ) {
+        light.position = {
+            static_cast<float>(cell.x) + 0.5f,
+            0.75f,
+            static_cast<float>(cell.y) + 0.5f
+        };
+        light.ambient = color * 0.08f;
+        light.diffuse = color * 1.5f;
+        light.specular = color;
+        light.constant = 1.0f;
+        light.linear = 0.35f;
+        light.quadratic = 0.44f;
+    };
+
+    configure_point_light(
+        m_lighting.point_lights[0],
+        m_maze.get_start(),
+        {0.2f, 0.4f, 1.0f}
+    );
+    configure_point_light(
+        m_lighting.point_lights[1],
+        m_maze.get_exit(),
+        {1.0f, 0.2f, 0.08f}
+    );
+    m_lighting.point_light_count = 2;
 }
 
 Game::~Game() = default;
@@ -49,7 +78,9 @@ void Game::update(double delta) {
     m_player.update(deltaf, m_maze);
 
     // ===== 3D =====
-    Renderer::begin_scene(m_player.get_camera());
+    m_lighting.spot_lights[0].position = m_player.get_camera().get_position();
+    m_lighting.spot_lights[0].direction = m_player.get_camera().get_front();
+    Renderer::begin_scene(m_player.get_camera(), m_lighting);
 
     Renderer::draw(m_maze_mesh, m_quad_shader);
 

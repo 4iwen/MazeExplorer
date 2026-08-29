@@ -3,7 +3,7 @@
 #include "maze.h"
 #include "renderer/mesh.h"
 #include "renderer/shader.h"
-#include "renderer/camera.h"
+#include "renderer/lighting.h"
 #include "player.h"
 #include "renderer/texture2d.h"
 
@@ -38,4 +38,5 @@ private:
     Shader m_ui_color_shader;
 
     Player m_player;
+    Lighting m_lighting;
 };
