@@ -20,12 +20,12 @@ Player::Player(
 
 void Player::update(float delta) {
     if (Input::is_mouse_captured()) {
-        update_look(delta);
+        update_look();
         update_movement(delta);
     }
 }
 
-void Player::update_look(float delta) {
+void Player::update_look() {
     double dx = Input::get_mouse_dx();
     double dy = Input::get_mouse_dy();
 
@@ -75,8 +75,6 @@ void Player::update_movement(float delta) {
 
     // Resolve each axis separately.
     glm::vec3 new_position = m_position;
-
-    new_position.x += delta_vec.x;
 
     new_position.x += delta_vec.x;
     m_position.x = new_position.x;

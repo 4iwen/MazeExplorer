@@ -31,6 +31,4 @@ private:
     Mesh m_quad_mesh;
     Shader m_quad_shader;
     Player m_player;
-
-    //Camera m_camera;
 };

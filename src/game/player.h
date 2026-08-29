@@ -15,7 +15,7 @@ public:
 
     void update(float delta);
 
-    void update_look(float delta);
+    void update_look();
 
     void update_movement(float delta);
 
@@ -24,7 +24,7 @@ public:
 
 private:
     glm::vec3 m_position = {0, 0, 0};
-    float m_move_speed = 0.8f;
+    float m_move_speed = 1.6f;
     float m_mouse_sensitivity = 0.003f;
 
     //float m_radius = 0.3f;

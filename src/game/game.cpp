@@ -5,6 +5,7 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "maze_generator.h"
 #include "renderer/renderer.h"
 #include "platform/time.h"
 #include "platform/input.h"
@@ -33,6 +34,9 @@ Game::Game(uint32_t window_width, uint32_t window_height)
           70,
           static_cast<float>(m_window_width) / static_cast<float>(m_window_height)
       ) {
+
+    Maze maze = Maze_Generator::generate(21, 21);
+    maze.print();
 }
 
 Game::~Game() = default;
@@ -58,5 +62,4 @@ void Game::on_resize(uint32_t width, uint32_t height) {
     m_window_height = height;
 
     m_player.get_camera().set_aspect_ratio(static_cast<float>(width) / static_cast<float>(height));
-    //m_camera.set_aspect_ratio(static_cast<float>(width) / static_cast<float>(height));
 }
