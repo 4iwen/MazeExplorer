@@ -1,9 +1,11 @@
 #pragma once
 
+#include "maze.h"
 #include "renderer/mesh.h"
 #include "renderer/shader.h"
 #include "renderer/camera.h"
 #include "player.h"
+#include "renderer/texture2d.h"
 
 class Game {
 public:
@@ -31,4 +33,7 @@ private:
     Mesh m_quad_mesh;
     Shader m_quad_shader;
     Player m_player;
+
+    Maze m_maze;
+    Texture2D m_maze_texture;
 };

@@ -48,5 +48,7 @@ void Renderer::initialize_opengl() {
     if (!gladLoadGL(reinterpret_cast<GLADloadfunc>(get_gl_proc_address))) {
         throw std::runtime_error("Failed to initialize GLAD.");
     }
+
+    glEnable(GL_DEPTH_TEST);
 }
 #endif

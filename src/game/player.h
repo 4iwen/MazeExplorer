@@ -19,7 +19,7 @@ public:
 
     void update_movement(float delta);
 
-    Camera get_camera() const { return m_camera; }
+    const Camera& get_camera() const { return m_camera; }
     Camera &get_camera() { return m_camera; }
 
 private:

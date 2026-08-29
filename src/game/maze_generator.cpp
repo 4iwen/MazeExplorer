@@ -14,7 +14,10 @@ std::mt19937 rng(std::random_device{}());
 void Maze_Generator::carve_passages_from(
     int32_t x,
     int32_t y,
-    Maze &maze
+    Maze &maze,
+    int32_t depth,
+    glm::ivec2 &farthest,
+    int32_t &max_depth
 ) {
     std::array<glm::ivec2, 4> directions = {
         {
@@ -24,6 +27,11 @@ void Maze_Generator::carve_passages_from(
             {2, 0}
         }
     };
+
+    if (depth > max_depth) {
+        max_depth = depth;
+        farthest = {x, y};
+    }
 
     std::shuffle(directions.begin(), directions.end(), rng);
 
@@ -52,7 +60,14 @@ void Maze_Generator::carve_passages_from(
         maze.set_tile(wall_x, wall_y, Maze_Tile::EMPTY);
         maze.set_tile(nx, ny, Maze_Tile::EMPTY);
 
-        carve_passages_from(nx, ny, maze);
+        carve_passages_from(
+            nx,
+            ny,
+            maze,
+            depth + 1,
+            farthest,
+            max_depth
+        );
     }
 }
 
@@ -70,10 +85,33 @@ Maze Maze_Generator::generate(uint32_t width, uint32_t height) {
 
     Maze maze(width, height);
 
-    glm::ivec2 start = {1, 1};
+    // Number of logical cells along each dimension.
+    uint32_t cells_x = (width - 1) / 2;
+    uint32_t cells_y = (height - 1) / 2;
+
+    std::uniform_int_distribution<uint32_t> x_dist(0, cells_x - 1);
+    std::uniform_int_distribution<uint32_t> y_dist(0, cells_y - 1);
+
+    glm::ivec2 start = {
+        static_cast<int32_t>(x_dist(rng) * 2 + 1),
+        static_cast<int32_t>(y_dist(rng) * 2 + 1)
+    };
     maze.set_tile(start.x, start.y, Maze_Tile::EMPTY);
 
-    carve_passages_from(1, 1, maze);
+    glm::ivec2 farthest = start;
+    int32_t max_depth = 0;
+
+    carve_passages_from(
+        start.x,
+        start.y,
+        maze,
+        0,
+        farthest,
+        max_depth
+    );
+
+    maze.set_tile(start.x, start.y, Maze_Tile::START);
+    maze.set_tile(farthest.x, farthest.y, Maze_Tile::EXIT);
 
     return maze;
 }

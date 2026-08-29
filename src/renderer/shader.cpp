@@ -27,6 +27,11 @@ void Shader::set_mat4(const std::string &name, const glm::mat4 &value) const {
     glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(value));
 }
 
+void Shader::set_int(const std::string &name, int value) const {
+    GLint location = glGetUniformLocation(m_id, name.c_str());
+    glUniform1i(location, value);
+}
+
 void Shader::compile(
     const std::string &vertex_shader_source,
     const std::string &fragment_shader_source

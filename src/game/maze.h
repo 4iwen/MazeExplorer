@@ -3,11 +3,13 @@
 #include <cstdint>
 #include <vector>
 
+#include "renderer/texture2d.h"
+
 enum class Maze_Tile {
     EMPTY,
     WALL,
     START,
-    END
+    EXIT
 };
 
 class Maze {
@@ -21,9 +23,9 @@ public:
     uint32_t get_width() const { return m_width; }
     uint32_t get_height() const { return m_height; }
 
-    bool is_tile_wall(uint32_t x, uint32_t y) const;
-
     void print() const;
+
+    Texture2D to_texture2D() const;
 
 private:
     uint32_t m_width;
