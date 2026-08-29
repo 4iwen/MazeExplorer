@@ -3,6 +3,7 @@
 #include "renderer/mesh.h"
 #include "renderer/shader.h"
 #include "renderer/camera.h"
+#include "player.h"
 
 class Game {
 public:
@@ -29,5 +30,7 @@ private:
 
     Mesh m_quad_mesh;
     Shader m_quad_shader;
-    Camera m_camera;
+    Player m_player;
+
+    //Camera m_camera;
 };

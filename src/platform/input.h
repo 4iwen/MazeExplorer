@@ -47,6 +47,7 @@ public:
     static void on_mouse_button(int button, int action);
 
 private:
+    // This is not ideal, but since we're working with a single window its fine for a prototype.
     static std::array<bool, static_cast<size_t>(Key::COUNT)> s_keys_current;
     static std::array<bool, static_cast<size_t>(Key::COUNT)> s_keys_previous;
 

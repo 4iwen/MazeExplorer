@@ -1,9 +1,7 @@
 #version 330 core
 
-in vec3 position;
-
 out vec4 fragment_color;
 
 void main() {
-    fragment_color = vec4(position, 1.0);
+    fragment_color = vec4(1, 1, 1, 1);
 }

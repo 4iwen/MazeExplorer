@@ -9,7 +9,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 
-file(GLOB_RECURSE SOURCES
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
@@ -20,11 +20,19 @@ target_compile_definitions(MazeExplorer PRIVATE
 )
 
 # Copy assets to output directory
-add_custom_command(TARGET MazeExplorer POST_BUILD
+file(GLOB_RECURSE ASSETS CONFIGURE_DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets/*"
+)
+
+add_custom_target(copy_assets ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/assets"
         "$<TARGET_FILE_DIR:MazeExplorer>/assets"
+        DEPENDS ${ASSETS}
+        COMMENT "Copying assets"
 )
+
+add_dependencies(MazeExplorer copy_assets)
 
 # Dependencies
 set(GLFW_BUILD_DOCS OFF)
