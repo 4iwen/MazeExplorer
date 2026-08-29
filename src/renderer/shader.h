@@ -25,6 +25,8 @@ public:
 
     void set_int(const std::string &name, int value) const;
 
+    void set_vec4(const std::string& name,const glm::vec4& value) const;
+
 private:
     void compile(
         const std::string &vertex_shader_source,

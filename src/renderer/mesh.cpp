@@ -32,25 +32,29 @@ Mesh Mesh::quad() {
             .position = {-0.5f, 0.5f, 0.0f},
             .normal = {0.0f, 0.0f, 1.0f},
             .tangent = {1.0f, 0.0f, 0.0f},
-            .uv = {0.0f, 1.0f}
+            .uv = {0.0f, 1.0f},
+            .color = {1.0f, 1.0f, 1.0f, 1.0f}
         },
         {
             .position = {0.5f, 0.5f, 0.0f},
             .normal = {0.0f, 0.0f, 1.0f},
             .tangent = {1.0f, 0.0f, 0.0f},
-            .uv = {1.0f, 1.0f}
+            .uv = {1.0f, 1.0f},
+            .color = {1.0f, 1.0f, 1.0f, 1.0f}
         },
         {
             .position = {0.5f, -0.5f, 0.0f},
             .normal = {0.0f, 0.0f, 1.0f},
             .tangent = {1.0f, 0.0f, 0.0f},
-            .uv = {1.0f, 0.0f}
+            .uv = {1.0f, 0.0f},
+            .color = {1.0f, 1.0f, 1.0f, 1.0f}
         },
         {
             .position = {-0.5f, -0.5f, 0.0f},
             .normal = {0.0f, 0.0f, 1.0f},
             .tangent = {1.0f, 0.0f, 0.0f},
-            .uv = {0.0f, 0.0f}
+            .uv = {0.0f, 0.0f},
+            .color = {1.0f, 1.0f, 1.0f, 1.0f}
         }
     };
 

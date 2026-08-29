@@ -13,8 +13,7 @@ private:
         int32_t x,
         int32_t y,
         Maze &maze,
-        int32_t depth,
         glm::ivec2 &farthest,
-        int32_t &max_depth
+        int32_t &max_distance
     );
 };

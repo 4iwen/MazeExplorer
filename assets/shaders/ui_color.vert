@@ -1,15 +1,10 @@
 #version 330 core
 
 layout(location = 0) in vec3 vertex_position;
-layout(location = 4) in vec4 vertex_color;
 
 uniform mat4 view_projection_matrix;
 uniform mat4 model_matrix;
 
-out vec4 color;
-
 void main() {
-    color = vertex_color;
-
     gl_Position = view_projection_matrix * model_matrix * vec4(vertex_position, 1.0);
 }

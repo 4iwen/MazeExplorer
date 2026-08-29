@@ -9,15 +9,16 @@
 // Based on:
 // https://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking.html
 
-std::mt19937 rng(std::random_device{}());
+namespace {
+    std::mt19937 rng(std::random_device{}());
+}
 
 void Maze_Generator::carve_passages_from(
     int32_t x,
     int32_t y,
     Maze &maze,
-    int32_t depth,
     glm::ivec2 &farthest,
-    int32_t &max_depth
+    int32_t &max_distance
 ) {
     std::array<glm::ivec2, 4> directions = {
         {
@@ -28,12 +29,9 @@ void Maze_Generator::carve_passages_from(
         }
     };
 
-    if (depth > max_depth) {
-        max_depth = depth;
-        farthest = {x, y};
-    }
-
     std::shuffle(directions.begin(), directions.end(), rng);
+
+    const int32_t current_distance = maze.get_distance(x, y);
 
     for (const glm::ivec2 &direction: directions) {
         int nx = x + direction.x;
@@ -58,15 +56,22 @@ void Maze_Generator::carve_passages_from(
         int wall_y = (y + ny) / 2;
 
         maze.set_tile(wall_x, wall_y, Maze_Tile::EMPTY);
+        maze.set_distance(wall_x, wall_y, current_distance + 1);
         maze.set_tile(nx, ny, Maze_Tile::EMPTY);
+        const int32_t next_distance = current_distance + 2;
+        maze.set_distance(nx, ny, next_distance);
+
+        if (next_distance > max_distance) {
+            max_distance = next_distance;
+            farthest = {nx, ny};
+        }
 
         carve_passages_from(
             nx,
             ny,
             maze,
-            depth + 1,
             farthest,
-            max_depth
+            max_distance
         );
     }
 }
@@ -97,18 +102,22 @@ Maze Maze_Generator::generate(uint32_t width, uint32_t height) {
         static_cast<int32_t>(y_dist(rng) * 2 + 1)
     };
     maze.set_tile(start.x, start.y, Maze_Tile::EMPTY);
+    maze.set_distance(start.x, start.y, 0);
 
     glm::ivec2 farthest = start;
-    int32_t max_depth = 0;
+    int32_t max_distance = 0;
 
     carve_passages_from(
         start.x,
         start.y,
         maze,
-        0,
         farthest,
-        max_depth
+        max_distance
     );
+
+    maze.set_start(start);
+    maze.set_exit(farthest);
+    maze.set_max_distance(max_distance);
 
     maze.set_tile(start.x, start.y, Maze_Tile::START);
     maze.set_tile(farthest.x, farthest.y, Maze_Tile::EXIT);

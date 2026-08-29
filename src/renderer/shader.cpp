@@ -32,6 +32,11 @@ void Shader::set_int(const std::string &name, int value) const {
     glUniform1i(location, value);
 }
 
+void Shader::set_vec4(const std::string &name, const glm::vec4 &value) const {
+    GLint location = glGetUniformLocation(m_id, name.c_str());
+    glUniform4fv(location, 1, glm::value_ptr(value));
+}
+
 void Shader::compile(
     const std::string &vertex_shader_source,
     const std::string &fragment_shader_source

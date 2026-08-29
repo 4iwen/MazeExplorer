@@ -50,6 +50,13 @@ void Vertex_Array::add_vertex_buffer(const Vertex_Buffer &vertex_buffer) const {
     );
     glEnableVertexAttribArray(3);
 
+    glVertexAttribPointer(
+        4, 4, GL_FLOAT, GL_FALSE,
+        sizeof(Vertex),
+        reinterpret_cast<void*>(offsetof(Vertex, color))
+    );
+    glEnableVertexAttribArray(4);
+
     unbind();
 }
 

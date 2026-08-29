@@ -12,6 +12,7 @@ struct Vertex {
     glm::vec3 normal;
     glm::vec3 tangent;
     glm::vec2 uv;
+    glm::vec4 color;
 };
 
 class Vertex_Buffer : public Buffer {

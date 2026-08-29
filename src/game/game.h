@@ -27,13 +27,15 @@ private:
     uint32_t m_window_width;
     uint32_t m_window_height;
 
-    float m_mouse_sensitivity = 0.003f;
-    float m_movement_speed = 1.0f;
+    Maze m_maze;
+    Mesh m_maze_mesh;
+    Texture2D m_minimap;
 
     Mesh m_quad_mesh;
-    Shader m_quad_shader;
-    Player m_player;
 
-    Maze m_maze;
-    Texture2D m_maze_texture;
+    Shader m_quad_shader;
+    Shader m_ui_shader;
+    Shader m_ui_color_shader;
+
+    Player m_player;
 };
