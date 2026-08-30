@@ -2,6 +2,8 @@
 
 A small C++20/OpenGL engine + first-person maze explorer.
 
+![Showcase](showcase.png)
+
 ## Controls
 
 | Input             | Action                                   |
@@ -48,7 +50,7 @@ bin/
 
 ## Releases
 
-Prebuilt releases for Windows, Linux and macOS are available at https://github.com/4iwen/MazeExplorer/releases
+Prebuilt releases for Windows, Linux and macOS are available at https://github.com/4iwen/MazeExplorer/tags
 
 ## Dependencies
 The project uses the following dependencies as Git submodules:
