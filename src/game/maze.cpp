@@ -2,11 +2,41 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <array>
 
 #include <glm/glm.hpp>
 
 #include "renderer/mesh.h"
 #include "renderer/vertex_buffer.h"
+#include "utils/utils.h"
+
+struct Maze::Render_Data {
+    Shader shader;
+    Texture2D floor_texture;
+    Texture2D wall_texture;
+    Mesh floor_mesh;
+    Mesh wall_mesh;
+    Material floor_material;
+    Material wall_material;
+    std::array<Renderable, 2> renderables;
+
+    explicit Render_Data(const Maze &maze)
+        : shader(
+              Utils::read_entire_file("assets/shaders/quad.vert"),
+              Utils::read_entire_file("assets/shaders/quad.frag")
+          ),
+          floor_texture(Texture2D::from_file("assets/textures/scifi/floor_desert.png")),
+          wall_texture(Texture2D::from_file("assets/textures/scifi/wall_desert_2.png")),
+          floor_mesh(maze.to_floor_mesh(1.0f)),
+          wall_mesh(maze.to_wall_mesh(1.0f)),
+          floor_material(shader, &floor_texture),
+          wall_material(shader, &wall_texture),
+          renderables{
+              Renderable(floor_mesh, floor_material, Render_Pass::WORLD),
+              Renderable(wall_mesh, wall_material, Render_Pass::WORLD)
+          } {
+    }
+};
 
 Maze::Maze(uint32_t width, uint32_t height)
     : m_width(width),
@@ -113,8 +143,22 @@ Mesh Maze::to_floor_mesh(float tile_size) const {
     return create_mesh(tile_size, true, false);
 }
 
+Maze::~Maze() = default;
+
+Maze::Maze(Maze &&other) noexcept = default;
+
+Maze &Maze::operator=(Maze &&other) noexcept = default;
+
 Mesh Maze::to_wall_mesh(float tile_size) const {
     return create_mesh(tile_size, false, true);
+}
+
+void Maze::initialize_rendering() {
+    m_render_data = std::make_unique<Render_Data>(*this);
+}
+
+std::span<const Renderable> Maze::get_renderables() const {
+    return m_render_data->renderables;
 }
 
 Mesh Maze::create_mesh(float tile_size, bool include_floor, bool include_walls) const {
@@ -244,7 +288,6 @@ Mesh Maze::create_mesh(float tile_size, bool include_floor, bool include_walls) 
                 add_quad(
                     {x0, 0.0f, z0},
                     {x0, 0.0f, z1},
-
                     {x0, WALL_HEIGHT, z1},
                     {x0, WALL_HEIGHT, z0},
                     {-1.0f, 0.0f, 0.0f},
@@ -255,7 +298,6 @@ Mesh Maze::create_mesh(float tile_size, bool include_floor, bool include_walls) 
                 add_quad(
                     {x1, 0.0f, z1},
                     {x1, 0.0f, z0},
-
                     {x1, WALL_HEIGHT, z0},
                     {x1, WALL_HEIGHT, z1},
                     {1.0f, 0.0f, 0.0f},
@@ -263,9 +305,14 @@ Mesh Maze::create_mesh(float tile_size, bool include_floor, bool include_walls) 
                 );
             }
 
-            add_quad({x0, WALL_HEIGHT, z0}, {x0, WALL_HEIGHT, z1},
-                     {x1, WALL_HEIGHT, z1}, {x1, WALL_HEIGHT, z0},
-                     {0.0f, 1.0f, 0.0f}, WALL_COLOR);
+            add_quad(
+                {x0, WALL_HEIGHT, z0},
+                {x0, WALL_HEIGHT, z1},
+                {x1, WALL_HEIGHT, z1},
+                {x1, WALL_HEIGHT, z0},
+                {0.0f, 1.0f, 0.0f},
+                WALL_COLOR
+            );
         }
     }
 

@@ -1,11 +1,14 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
+#include <span>
 #include <vector>
 
 #include "glm/vec2.hpp"
 #include "renderer/mesh.h"
 #include "renderer/texture2d.h"
+#include "renderer/renderable.h"
 
 enum class Maze_Tile {
     EMPTY,
@@ -17,6 +20,16 @@ enum class Maze_Tile {
 class Maze {
 public:
     Maze(uint32_t width, uint32_t height);
+
+    ~Maze();
+
+    Maze(Maze &&other) noexcept;
+
+    Maze &operator=(Maze &&other) noexcept;
+
+    Maze(const Maze &other) = delete;
+
+    Maze &operator=(const Maze &other) = delete;
 
     Maze_Tile get_tile(uint32_t x, uint32_t y) const;
 
@@ -37,6 +50,10 @@ public:
 
     Mesh to_wall_mesh(float tile_size) const;
 
+    void initialize_rendering();
+
+    std::span<const Renderable> get_renderables() const;
+
     void set_start(glm::ivec2 start) { m_start = start; }
     void set_exit(glm::ivec2 exit) { m_exit = exit; }
     void set_max_distance(int32_t max_distance) { m_max_distance = max_distance; }
@@ -45,6 +62,8 @@ public:
     const glm::ivec2 &get_exit() const { return m_exit; }
 
 private:
+    struct Render_Data;
+
     Mesh create_mesh(float tile_size, bool include_floor, bool include_walls) const;
 
     uint32_t m_width;
@@ -58,4 +77,6 @@ private:
     glm::ivec2 m_exit{0};
 
     int32_t m_max_distance = 0;
+
+    std::unique_ptr<Render_Data> m_render_data;
 };
