@@ -5,6 +5,8 @@
 #include "platform/time.h"
 #include "platform/input.h"
 
+#include "utils/utils.h"
+
 Game::Game(uint32_t window_width, uint32_t window_height)
     : m_window_width(window_width),
       m_window_height(window_height),
@@ -27,6 +29,7 @@ Game::~Game() = default;
 
 // called periodically
 void Game::fixed_update(double delta) {
+    UNUSED(delta);
 }
 
 // called on every frame

@@ -34,6 +34,12 @@ add_custom_target(copy_assets ALL
 
 add_dependencies(MazeExplorer copy_assets)
 
+if (MSVC)
+    target_compile_options(MazeExplorer PRIVATE /W4 /permissive-)
+else()
+    target_compile_options(MazeExplorer PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
 # Dependencies
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_BUILD_EXAMPLES OFF)

@@ -1,5 +1,7 @@
 #include "minimap.h"
 
+#include "utils/utils.h"
+
 Minimap::Minimap(const Maze &maze)
     : m_maze(maze),
       m_texture(maze.to_texture2D()),
@@ -15,6 +17,7 @@ Minimap::Minimap(const Maze &maze)
 }
 
 void Minimap::update(const glm::vec3 &player_position, uint32_t screen_width, uint32_t screen_height) {
+    UNUSED(screen_height);
     constexpr float SIZE = 200.0f;
     constexpr float MARGIN = 20.0f;
     constexpr float MARKER_SIZE = 6.0f;

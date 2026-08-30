@@ -4,6 +4,7 @@
 #include "platform/time.h"
 #include "renderer/renderer.h"
 #include "game/game.h"
+#include "utils/utils.h"
 
 void App::run() {
     constexpr uint32_t WINDOW_WIDTH = 1152;
@@ -60,12 +61,15 @@ void App::set_callbacks(Window &window, Game &game) {
         Renderer::set_viewport(width, height);
     });
     window.set_key_callback([](int32_t key, int32_t scancode, int32_t action, int32_t mods) {
+        UNUSED(scancode);
+        UNUSED(mods);
         Input::on_key(key, action);
     });
     window.set_cursor_callback([](double x, double y) {
         Input::on_cursor(x, y);
     });
     window.set_mouse_button_callback([](int32_t button, int32_t action, int32_t mods) {
-       Input::on_mouse_button(button, action);
+        UNUSED(mods);
+        Input::on_mouse_button(button, action);
     });
 }

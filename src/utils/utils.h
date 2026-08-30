@@ -5,3 +5,5 @@ class Utils {
 public:
     static std::string read_entire_file(const std::string &path);
 };
+
+#define UNUSED(x) (void)(x)
