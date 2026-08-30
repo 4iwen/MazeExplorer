@@ -109,7 +109,15 @@ Texture2D Maze::to_texture2D() const {
     );
 }
 
-Mesh Maze::to_mesh(float tile_size) const {
+Mesh Maze::to_floor_mesh(float tile_size) const {
+    return create_mesh(tile_size, true, false);
+}
+
+Mesh Maze::to_wall_mesh(float tile_size) const {
+    return create_mesh(tile_size, false, true);
+}
+
+Mesh Maze::create_mesh(float tile_size, bool include_floor, bool include_walls) const {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
 
@@ -173,6 +181,10 @@ Mesh Maze::to_mesh(float tile_size) const {
         for (uint32_t x = 0; x < m_width; ++x) {
             const Maze_Tile tile = get_tile(x, y);
             if (tile != Maze_Tile::WALL) {
+                if (!include_floor) {
+                    continue;
+                }
+
                 float t = 0.0f;
 
                 if (m_max_distance > 0) {
@@ -192,6 +204,10 @@ Mesh Maze::to_mesh(float tile_size) const {
                     {0.0f, 1.0f, 0.0f},
                     glm::mix(START_COLOR, EXIT_COLOR, t)
                 );
+                continue;
+            }
+
+            if (!include_walls) {
                 continue;
             }
 

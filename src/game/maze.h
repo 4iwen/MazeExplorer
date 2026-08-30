@@ -33,7 +33,9 @@ public:
 
     Texture2D to_texture2D() const;
 
-    Mesh to_mesh(float tile_size) const;
+    Mesh to_floor_mesh(float tile_size) const;
+
+    Mesh to_wall_mesh(float tile_size) const;
 
     void set_start(glm::ivec2 start) { m_start = start; }
     void set_exit(glm::ivec2 exit) { m_exit = exit; }
@@ -43,6 +45,8 @@ public:
     const glm::ivec2 &get_exit() const { return m_exit; }
 
 private:
+    Mesh create_mesh(float tile_size, bool include_floor, bool include_walls) const;
+
     uint32_t m_width;
     uint32_t m_height;
 

@@ -5,6 +5,7 @@
 #include "shader.h"
 #include "mesh.h"
 #include "lighting.h"
+#include "material.h"
 #include "texture2d.h"
 
 #include <glm/glm.hpp>
@@ -25,6 +26,13 @@ public:
     static void draw(
         const Mesh &mesh,
         const Shader &shader,
+        const glm::mat4 &transform = glm::mat4(1.0f)
+    );
+
+    static void draw(
+        const Mesh &mesh,
+        const Shader &shader,
+        const Material &material,
         const glm::mat4 &transform = glm::mat4(1.0f)
     );
 

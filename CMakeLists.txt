@@ -46,6 +46,7 @@ target_include_directories(MazeExplorer PRIVATE
         deps/glad/include
         deps/glfw/include
         deps/glm/include
+        deps/stb
 
         src/
 )

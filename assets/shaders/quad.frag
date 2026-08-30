@@ -38,6 +38,7 @@ uniform int u_point_light_count;
 uniform int u_spot_light_count;
 uniform Point_Light u_point_lights[MAX_POINT_LIGHTS];
 uniform Spot_Light u_spot_lights[MAX_SPOT_LIGHTS];
+uniform sampler2D u_albedo_texture;
 
 out vec4 color;
 
@@ -84,5 +85,6 @@ void main() {
         lighting += spot_light(u_spot_lights[i], normal, v_position);
     }
 
-    color = vec4(v_color.rgb * lighting, v_color.a);
+    vec4 albedo = texture(u_albedo_texture, v_uv);
+    color = vec4(albedo.rgb * lighting, albedo.a);
 }

@@ -11,8 +11,13 @@ Game::Game(uint32_t window_width, uint32_t window_height)
       m_window_height(window_height),
 
       m_maze(Maze_Generator::generate(31, 31)),
-      m_maze_mesh(m_maze.to_mesh(1.0f)),
+      m_floor_mesh(m_maze.to_floor_mesh(1.0f)),
+      m_wall_mesh(m_maze.to_wall_mesh(1.0f)),
       m_minimap(m_maze.to_texture2D()),
+      m_floor_texture(Texture2D::from_file("assets/textures/scifi/floor_desert.png")),
+      m_wall_texture(Texture2D::from_file("assets/textures/scifi/wall_desert_2.png")),
+      m_floor_material(m_floor_texture),
+      m_wall_material(m_wall_texture),
       m_quad_mesh(Mesh::quad()),
       m_quad_shader(
           Utils::read_entire_file("assets/shaders/quad.vert"),
@@ -82,7 +87,8 @@ void Game::update(double delta) {
     m_lighting.spot_lights[0].direction = m_player.get_camera().get_front();
     Renderer::begin_scene(m_player.get_camera(), m_lighting);
 
-    Renderer::draw(m_maze_mesh, m_quad_shader);
+    Renderer::draw(m_floor_mesh, m_quad_shader, m_floor_material);
+    Renderer::draw(m_wall_mesh, m_quad_shader, m_wall_material);
 
     Renderer::end_scene();
     // ==============

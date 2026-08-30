@@ -4,6 +4,7 @@
 #include "renderer/mesh.h"
 #include "renderer/shader.h"
 #include "renderer/lighting.h"
+#include "renderer/material.h"
 #include "player.h"
 #include "renderer/texture2d.h"
 
@@ -28,8 +29,13 @@ private:
     uint32_t m_window_height;
 
     Maze m_maze;
-    Mesh m_maze_mesh;
+    Mesh m_floor_mesh;
+    Mesh m_wall_mesh;
     Texture2D m_minimap;
+    Texture2D m_floor_texture;
+    Texture2D m_wall_texture;
+    Material m_floor_material;
+    Material m_wall_material;
 
     Mesh m_quad_mesh;
 

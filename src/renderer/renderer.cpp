@@ -23,7 +23,7 @@ void Renderer::begin_scene(const Camera &camera, const Lighting &lighting) {
     s_view_projection_matrix = s_projection_matrix * s_view_matrix;
     s_view_position = camera.get_position();
     s_lighting = lighting;
-    clear({0.1f, 0.1f, 0.1f, 1.0f});
+    clear({0.33f, 0.56f, 0.71f, 1.0f});
 }
 
 void Renderer::end_scene() {
@@ -57,6 +57,22 @@ void Renderer::draw(
     shader.set_mat4("u_model", transform);
     shader.set_mat4("u_view", s_view_matrix);
     shader.set_mat4("u_projection", s_projection_matrix);
+    apply_lighting(shader);
+    mesh.draw();
+}
+
+void Renderer::draw(
+    const Mesh &mesh,
+    const Shader &shader,
+    const Material &material,
+    const glm::mat4 &transform
+) {
+    material.bind();
+    shader.use();
+    shader.set_mat4("u_model", transform);
+    shader.set_mat4("u_view", s_view_matrix);
+    shader.set_mat4("u_projection", s_projection_matrix);
+    shader.set_int("u_albedo_texture", 0);
     apply_lighting(shader);
     mesh.draw();
 }

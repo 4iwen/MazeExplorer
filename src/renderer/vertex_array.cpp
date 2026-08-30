@@ -25,35 +25,35 @@ void Vertex_Array::add_vertex_buffer(const Vertex_Buffer &vertex_buffer) const {
     glVertexAttribPointer(
         0, 3, GL_FLOAT, GL_FALSE,
         sizeof(Vertex),
-        reinterpret_cast<void*>(offsetof(Vertex, position))
+        reinterpret_cast<void *>(offsetof(Vertex, position))
     );
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(
         1, 3, GL_FLOAT, GL_FALSE,
         sizeof(Vertex),
-        reinterpret_cast<void*>(offsetof(Vertex, normal))
+        reinterpret_cast<void *>(offsetof(Vertex, normal))
     );
     glEnableVertexAttribArray(1);
 
     glVertexAttribPointer(
         2, 3, GL_FLOAT, GL_FALSE,
         sizeof(Vertex),
-        reinterpret_cast<void*>(offsetof(Vertex, tangent))
+        reinterpret_cast<void *>(offsetof(Vertex, tangent))
     );
     glEnableVertexAttribArray(2);
 
     glVertexAttribPointer(
         3, 2, GL_FLOAT, GL_FALSE,
         sizeof(Vertex),
-        reinterpret_cast<void*>(offsetof(Vertex, uv))
+        reinterpret_cast<void *>(offsetof(Vertex, uv))
     );
     glEnableVertexAttribArray(3);
 
     glVertexAttribPointer(
         4, 4, GL_FLOAT, GL_FALSE,
         sizeof(Vertex),
-        reinterpret_cast<void*>(offsetof(Vertex, color))
+        reinterpret_cast<void *>(offsetof(Vertex, color))
     );
     glEnableVertexAttribArray(4);
 

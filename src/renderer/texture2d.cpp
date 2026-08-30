@@ -2,8 +2,28 @@
 
 #include <stdexcept>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 Texture2D Texture2D::from_file(const std::string &file_path) {
-    throw std::runtime_error("Texture2D::from_file not implemented");
+    int width;
+    int height;
+    int channels;
+
+    stbi_set_flip_vertically_on_load(true);
+
+    stbi_uc *pixels = stbi_load(file_path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+    if (!pixels) {
+        throw std::runtime_error("Failed to load texture: " + file_path);
+    }
+
+    std::vector<uint8_t> data(
+        pixels,
+        pixels + static_cast<size_t>(width) * height * STBI_rgb_alpha
+    );
+    stbi_image_free(pixels);
+
+    return {static_cast<uint32_t>(width), static_cast<uint32_t>(height), std::move(data)};
 }
 
 Texture2D Texture2D::from_data(

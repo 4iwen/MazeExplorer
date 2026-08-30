@@ -7,7 +7,7 @@ static void error_callback(int error, const char *description) {
     std::cout << "Error (" << error << "): " << description << std::endl;
 }
 
-static void framebuffer_size_callback(
+void framebuffer_size_callback(
     GLFWwindow *handle,
     int width,
     int height
@@ -19,7 +19,7 @@ static void framebuffer_size_callback(
     window->m_resize_callback(width, height);
 }
 
-static void key_callback(
+void key_callback(
     GLFWwindow *handle,
     int key,
     int scancode,
@@ -31,7 +31,7 @@ static void key_callback(
     window->m_key_callback(key, scancode, action, mods);
 }
 
-static void cursor_callback(
+void cursor_callback(
     GLFWwindow *handle,
     double x,
     double y
@@ -41,7 +41,7 @@ static void cursor_callback(
     window->m_cursor_callback(x, y);
 }
 
-static void mouse_button_callback(
+void mouse_button_callback(
     GLFWwindow *handle,
     int button,
     int action,
