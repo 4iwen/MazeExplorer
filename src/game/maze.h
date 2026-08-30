@@ -54,6 +54,8 @@ public:
 
     std::span<const Renderable> get_renderables() const;
 
+    void update_exit_rat(const glm::vec3 &player_position, float jump_height);
+
     void set_start(glm::ivec2 start) { m_start = start; }
     void set_exit(glm::ivec2 exit) { m_exit = exit; }
     void set_max_distance(int32_t max_distance) { m_max_distance = max_distance; }

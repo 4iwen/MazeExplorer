@@ -5,36 +5,78 @@
 #include <array>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "renderer/mesh.h"
 #include "renderer/vertex_buffer.h"
-#include "utils/utils.h"
 
 struct Maze::Render_Data {
+    static constexpr float RAT_SCALE = 0.005f;
+
     Shader shader;
     Texture2D floor_texture;
     Texture2D wall_texture;
+    Texture2D rat_texture;
     Mesh floor_mesh;
     Mesh wall_mesh;
+    Mesh rat_mesh;
     Material floor_material;
     Material wall_material;
-    std::array<Renderable, 2> renderables;
+    Material rat_material;
+    std::array<Renderable, 3> renderables;
 
     explicit Render_Data(const Maze &maze)
-        : shader(
-              Utils::read_entire_file("assets/shaders/quad.vert"),
-              Utils::read_entire_file("assets/shaders/quad.frag")
-          ),
+        : shader(Shader::from_files("assets/shaders/quad.vert", "assets/shaders/quad.frag")),
           floor_texture(Texture2D::from_file("assets/textures/scifi/floor_desert.png")),
           wall_texture(Texture2D::from_file("assets/textures/scifi/wall_desert_2.png")),
+          rat_texture(Texture2D::from_file("assets/models/rat/Tex_Rat.png")),
           floor_mesh(maze.to_floor_mesh(1.0f)),
           wall_mesh(maze.to_wall_mesh(1.0f)),
+          rat_mesh(Mesh::from_obj("assets/models/rat/Mesh_Rat.obj")),
           floor_material(shader, &floor_texture),
           wall_material(shader, &wall_texture),
+          rat_material(shader, &rat_texture),
           renderables{
               Renderable(floor_mesh, floor_material, Render_Pass::WORLD),
-              Renderable(wall_mesh, wall_material, Render_Pass::WORLD)
+              Renderable(wall_mesh, wall_material, Render_Pass::WORLD),
+              Renderable(
+                  rat_mesh,
+                  rat_material,
+                  Render_Pass::WORLD,
+                  0,
+                  glm::scale(
+                      glm::translate(
+                          glm::mat4(1.0f),
+                          {
+                              static_cast<float>(maze.get_exit().x) + 0.5f,
+                              0.0f,
+                              static_cast<float>(maze.get_exit().y) + 0.5f
+                          }
+                      ),
+                      {RAT_SCALE, RAT_SCALE, RAT_SCALE}
+                  )
+              )
           } {
+    }
+
+    void update_rat(const glm::ivec2 &exit, const glm::vec3 &player_position, float jump_height) {
+        glm::vec3 position{
+            static_cast<float>(exit.x) + 0.5f,
+            -rat_mesh.get_min_position().y * RAT_SCALE + jump_height,
+            static_cast<float>(exit.y) + 0.5f
+        };
+        glm::vec3 direction = player_position - position;
+        direction.y = 0.0f;
+
+        if (glm::dot(direction, direction) == 0.0f) {
+            direction = {0.0f, 0.0f, 1.0f};
+        } else {
+            direction = glm::normalize(direction);
+        }
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
+        transform = glm::rotate(transform, glm::atan(direction.x, direction.z), {0.0f, 1.0f, 0.0f});
+        renderables[2].set_transform(glm::scale(transform, {RAT_SCALE, RAT_SCALE, RAT_SCALE}));
     }
 };
 
@@ -159,6 +201,10 @@ void Maze::initialize_rendering() {
 
 std::span<const Renderable> Maze::get_renderables() const {
     return m_render_data->renderables;
+}
+
+void Maze::update_exit_rat(const glm::vec3 &player_position, float jump_height) {
+    m_render_data->update_rat(m_exit, player_position, jump_height);
 }
 
 Mesh Maze::create_mesh(float tile_size, bool include_floor, bool include_walls) const {

@@ -19,11 +19,9 @@ Player::Player(
       }) {
 }
 
-void Player::update(float delta, const Maze &maze) {
-    if (Input::is_mouse_captured()) {
-        update_look();
-        update_movement(delta, maze);
-    }
+void Player::set_position(const glm::vec3 &position) {
+    m_position = position;
+    m_camera.set_position(position);
 }
 
 void Player::update_look() {

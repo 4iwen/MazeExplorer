@@ -1,7 +1,10 @@
 #include "shader.h"
 
-#include <stdexcept>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <stdexcept>
+
+#include "utils/utils.h"
 
 Shader::Shader(
     const std::string &vertex_shader_source,
@@ -16,6 +19,16 @@ Shader::Shader(
 #ifdef RENDERER_OPENGL
 Shader::~Shader() {
     glDeleteProgram(m_id);
+}
+
+Shader Shader::from_files(
+    const std::string &vertex_shader_path,
+    const std::string &fragment_shader_path
+) {
+    return {
+        Utils::read_entire_file(vertex_shader_path),
+        Utils::read_entire_file(fragment_shader_path)
+    };
 }
 
 void Shader::use() const {

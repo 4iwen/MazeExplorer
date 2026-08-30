@@ -1,6 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
+
+#include <string>
 #include <vector>
 
 #include "vertex_array.h"
@@ -16,7 +18,11 @@ public:
 
     void draw() const;
 
+    glm::vec3 get_min_position() const;
+
     static Mesh quad();
+
+    static Mesh from_obj(const std::string &file_path);
 
 private:
     std::vector<Vertex> m_vertices;

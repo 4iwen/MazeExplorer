@@ -15,15 +15,15 @@ public:
         float aspect_ratio
     );
 
-    void update(float delta, const Maze &maze);
-
     void update_look();
 
     void update_movement(float delta, const Maze &maze);
 
-    const Camera& get_camera() const { return m_camera; }
+    const Camera &get_camera() const { return m_camera; }
     Camera &get_camera() { return m_camera; }
-    const glm::vec3& get_position() const { return m_position; }
+    const glm::vec3 &get_position() const { return m_position; }
+
+    void set_position(const glm::vec3 &position);
 
 private:
     bool collides_with_wall(const Maze &maze, const glm::vec3 &position) const;

@@ -1,19 +1,11 @@
 #include "minimap.h"
 
-#include "utils/utils.h"
-
 Minimap::Minimap(const Maze &maze)
     : m_maze(maze),
       m_texture(maze.to_texture2D()),
       m_quad_mesh(Mesh::quad()),
-      m_texture_shader(
-          Utils::read_entire_file("assets/shaders/ui.vert"),
-          Utils::read_entire_file("assets/shaders/ui.frag")
-      ),
-      m_color_shader(
-          Utils::read_entire_file("assets/shaders/ui_color.vert"),
-          Utils::read_entire_file("assets/shaders/ui_color.frag")
-      ),
+      m_texture_shader(Shader::from_files("assets/shaders/ui.vert", "assets/shaders/ui.frag")),
+      m_color_shader(Shader::from_files("assets/shaders/ui_color.vert", "assets/shaders/ui_color.frag")),
       m_texture_material(m_texture_shader, &m_texture),
       m_marker_material(m_color_shader, nullptr, {0.2f, 0.8f, 0.2f, 1.0f}),
       m_renderables{

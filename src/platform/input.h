@@ -7,10 +7,13 @@
 enum class Key {
 #ifdef PLATFORM_GLFW
     A = GLFW_KEY_A,
+    R = GLFW_KEY_R,
     W = GLFW_KEY_W,
     S = GLFW_KEY_S,
     D = GLFW_KEY_D,
     ESCAPE = GLFW_KEY_ESCAPE,
+    UP = GLFW_KEY_UP,
+    DOWN = GLFW_KEY_DOWN,
     LEFT_SHIFT = GLFW_KEY_LEFT_SHIFT,
     COUNT = GLFW_KEY_LAST + 1
 #endif
@@ -43,7 +46,9 @@ public:
     static double get_mouse_dy() { return s_mouse_delta_y; }
 
     static void on_key(int key, int action);
+
     static void on_cursor(double x, double y);
+
     static void on_mouse_button(int button, int action);
 
 private:

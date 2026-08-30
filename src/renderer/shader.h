@@ -19,6 +19,11 @@ public:
 
     Shader &operator=(const Shader &other) = delete;
 
+    static Shader from_files(
+        const std::string &vertex_shader_path,
+        const std::string &fragment_shader_path
+    );
+
     void use() const;
 
     void set_mat4(const std::string &name, const glm::mat4 &value) const;
