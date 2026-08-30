@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: ${{ matrix.os }}
@@ -24,9 +27,42 @@ jobs:
         run: >
           sudo apt-get update && sudo apt-get install -y
           libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+          libwayland-dev wayland-protocols
 
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: cmake --build build --config Release --parallel
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist
+          Compress-Archive -Path 'bin/Release/*' -DestinationPath "dist/MazeExplorer-${{ runner.os }}.zip"
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: MazeExplorer-${{ runner.os }}
+          path: dist/*.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: MazeExplorer-*
+          path: release
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: release/**/*.zip
