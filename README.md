@@ -46,6 +46,10 @@ The resulting executable will be placed in:
 bin/
 ```
 
+## Releases
+
+Prebuilt releases for Windows, Linux and macOS are available at https://github.com/4iwen/MazeExplorer/releases
+
 ## Dependencies
 The project uses the following dependencies as Git submodules:
  - [GLFW](https://github.com/glfw/glfw) - window creation and input
